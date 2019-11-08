@@ -3,9 +3,9 @@ package de.htwg.se.orderandchaos.model
 import scala.annotation.tailrec
 
 trait Grid {
-  def mapEachField(f: Cell => Cell): Grid
+  def mapEachCell(f: Cell => Cell): Grid
 
-  def forEachField(f: Cell => Unit): Unit
+  def forEachCell(f: Cell => Unit): Unit
 
   def exists(f: Cell => Boolean): Boolean
 
@@ -28,51 +28,58 @@ trait Grid {
   def getUpDiagonals: Vector[Vector[Cell]]
 
   def getDownDiagonals: Vector[Vector[Cell]]
+
+  def makeString(cellToString: Cell => String): String
 }
 
-private class GridImpl(fields: Vector[Vector[Cell]]) extends Grid {
-  override def toString: String = fields.map(row => row.mkString(" ")).reverse.mkString("\n")
+private class GridImpl(cells: Vector[Vector[Cell]]) extends Grid {
 
-  def mapEachField(f: Cell => Cell): Grid = new GridImpl(fields.map(row => row.map(f)))
+  override def mapEachCell(f: Cell => Cell): Grid = new GridImpl(cells.map(row => row.map(f)))
 
-  def forEachField(f: Cell => Unit): Unit = fields.foreach(row => row.foreach(f))
+  override def forEachCell(f: Cell => Unit): Unit = cells.foreach(row => row.foreach(f))
 
-  def exists(f: Cell => Boolean): Boolean = fields.exists(row => row.exists(f))
+  override def exists(f: Cell => Boolean): Boolean = cells.exists(row => row.exists(f))
 
-  def apply(x: Int, y: Int): Cell = fields(y)(x)
+  override def apply(x: Int, y: Int): Cell = cells(y)(x)
 
-  def set(x: Int, y: Int, fieldType: String): Grid = new GridImpl(
-    fields.updated(y,
-      fields(y).updated(x,
-        fields(y)(x).setType(fieldType))))
+  override def set(x: Int, y: Int, fieldType: String): Grid = new GridImpl(
+    cells.updated(y,
+      cells(y).updated(x,
+        cells(y)(x).setType(fieldType))))
 
-  def getRow(y: Int): Vector[Cell] = fields(y)
+  override def toString: String = makeString(_.toString)
 
-  def getColumn(x: Int): Vector[Cell] = fields.map(row => row(x))
+  def makeString(cellToString: Cell => String): String =
+    cells.map(row => row.map(cellToString).mkString(" "))
+      .reverse.mkString("\n")
 
-  def getUpDiagonal(xStart: Int, yStart: Int): Vector[Cell] = {
+  override def getRow(y: Int): Vector[Cell] = cells(y)
+
+  override def getColumn(x: Int): Vector[Cell] = cells.map(row => row(x))
+
+  override def getUpDiagonal(xStart: Int, yStart: Int): Vector[Cell] = {
     if (xStart > 0 && yStart > 0) {
       throw new IllegalArgumentException("parameters need to be on a starting axis")
     }
     getDiagonal(xStart, yStart, 1)
   }
 
-  def getDownDiagonal(xStart: Int, yStart: Int): Vector[Cell] = {
+  override def getDownDiagonal(xStart: Int, yStart: Int): Vector[Cell] = {
     if (xStart > 0 && yStart != Grid.WIDTH - 1) {
       throw new IllegalArgumentException("parameters need to be on a starting axis")
     }
     getDiagonal(xStart, yStart, -1)
   }
 
-  def getRows: Vector[Vector[Cell]] = fields
+  override def getRows: Vector[Vector[Cell]] = cells
 
-  def getColumns: Vector[Vector[Cell]] = Vector.empty ++ (for (x <- 0 until Grid.WIDTH) yield getColumn(x))
+  override def getColumns: Vector[Vector[Cell]] = Vector.empty ++ (for (x <- 0 until Grid.WIDTH) yield getColumn(x))
 
-  def getUpDiagonals: Vector[Vector[Cell]] = Vector.empty ++
+  override def getUpDiagonals: Vector[Vector[Cell]] = Vector.empty ++
     (for (x <- 0 until Grid.WIDTH) yield getUpDiagonal(x, 0)) ++
     (for (y <- 1 until Grid.WIDTH) yield getUpDiagonal(0, y))
 
-  def getDownDiagonals: Vector[Vector[Cell]] = Vector.empty ++
+  override def getDownDiagonals: Vector[Vector[Cell]] = Vector.empty ++
     (for (x <- 0 until Grid.WIDTH) yield getDownDiagonal(x, Grid.WIDTH - 1)) ++
     (for (y <- 1 until Grid.WIDTH) yield getDownDiagonal(0, y))
 

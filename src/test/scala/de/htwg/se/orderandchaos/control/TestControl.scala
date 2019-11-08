@@ -2,7 +2,7 @@ package de.htwg.se.orderandchaos.control
 
 import de.htwg.se.orderandchaos.model.Cell
 
-class TestControl(controllerToUse: Controller = new TestController) extends Control {
+class TestControl(controllerToUse: Controller = new TestController, cell: Cell = Cell.red) extends Control {
   var redCalls = 0
   var blueCalls = 0
   var playCalls = 0
@@ -10,9 +10,11 @@ class TestControl(controllerToUse: Controller = new TestController) extends Cont
   var redoCalls = 0
   var resetCalls = 0
   var controllerCalls = 0
+  var makeStringCalls = 0
   var lastX: Int = _
   var lastY: Int = _
   var lastType: String = _
+  var lastCellMethod: Cell => String = _
 
   override def playRed(x: Int, y: Int): Unit = {
     redCalls += 1
@@ -45,20 +47,28 @@ class TestControl(controllerToUse: Controller = new TestController) extends Cont
     controllerCalls += 1
     controllerToUse
   }
+
+  override def makeString(cellToString: Cell => String): String = {
+    lastCellMethod = cellToString
+    makeStringCalls += 1
+    cellToString(cell)
+  }
 }
 
-class ErrorControl extends Control {
-  override def playRed(x: Int, y: Int): Unit = throw new UnsupportedOperationException
+class ErrorControl(exception: Exception) extends Control {
+  override def playRed(x: Int, y: Int): Unit = throw exception
 
-  override def playBlue(x: Int, y: Int): Unit = throw new UnsupportedOperationException
+  override def playBlue(x: Int, y: Int): Unit = throw exception
 
-  override def play(x: Int, y: Int, fieldType: String): Unit = throw new UnsupportedOperationException
+  override def play(x: Int, y: Int, fieldType: String): Unit = throw exception
 
-  override def undo(): Unit = throw new UnsupportedOperationException
+  override def undo(): Unit = throw exception
 
-  override def redo(): Unit = throw new UnsupportedOperationException
+  override def redo(): Unit = throw exception
 
-  override def reset(): Unit = throw new UnsupportedOperationException
+  override def reset(): Unit = throw exception
 
-  override def controller: Controller = throw new UnsupportedOperationException
+  override def controller: Controller = throw exception
+
+  override def makeString(cellToString: Cell => String): String = ""
 }

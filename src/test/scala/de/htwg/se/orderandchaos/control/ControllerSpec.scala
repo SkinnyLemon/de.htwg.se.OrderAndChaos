@@ -1,6 +1,6 @@
 package de.htwg.se.orderandchaos.control
 
-import de.htwg.se.orderandchaos.model.{TestCell, TestGrid}
+import de.htwg.se.orderandchaos.model.{Cell, MoveOnDecidedGameException, TestCell, TestGrid}
 import org.junit.runner.RunWith
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
@@ -17,7 +17,7 @@ class ControllerSpec extends WordSpec with Matchers {
     }
     "not play turns when the game is over" in {
       val controller: Controller = new GameOverController(new TestGrid)
-      assertThrows[UnsupportedOperationException] {
+      assertThrows[MoveOnDecidedGameException] {
         controller.play(1, 1, TestCell.STANDARD_TYPE)
       }
     }
@@ -28,6 +28,12 @@ class ControllerSpec extends WordSpec with Matchers {
     "have a nice string representation after the game is over" in {
       val controller: Controller = new GameOverController(new TestGrid)
       controller.toString should be(s"Game over!\n${TestGrid.STRING_REPRESENTATION}")
+    }
+    "make colored strings" in {
+      val grid = new TestGrid(Cell.blue)
+      val controller: Controller = new GameOverController(grid)
+      controller.makeString(_ => "A") should be(s"${controller.header}\nA")
+      grid.makeStringCalls = 1
     }
   }
 }

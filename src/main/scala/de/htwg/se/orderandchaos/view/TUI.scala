@@ -1,6 +1,6 @@
 package de.htwg.se.orderandchaos.view
 
-import de.htwg.se.orderandchaos.control.{CommandInterpreter, Control, CellSet, Win}
+import de.htwg.se.orderandchaos.control.{CellSet, CommandTranslator, Control, Win}
 import de.htwg.se.orderandchaos.model.{CommandParsingException, OacException}
 
 import scala.annotation.tailrec
@@ -11,7 +11,7 @@ import scala.util.{Failure, Success, Try}
 //noinspection ScalaStyle
 final class TUI(control: Control) extends Reactor {
   listenTo(control)
-  val interpreter = new CommandInterpreter(control)
+  val interpreter = new CommandTranslator(control)
   var stop = false
   println("Welcome to Order and Chaos! Type \"help\" to display the available commands.")
   println(control.toString)
@@ -20,7 +20,7 @@ final class TUI(control: Control) extends Reactor {
   def interpretLines(): Unit = {
     readLine() match {
       case "help" => println("The available commands are: set, print, undo, redo, q. To learn more about them type them with a -h")
-      case "set -h" => println(s"This command sets a field to the specified type. Only empty fields can be set. Use like this:\n${CommandInterpreter.setInstruction}")
+      case "set -h" => println(s"This command sets a field to the specified type. Only empty fields can be set. Use like this:\n${CommandTranslator.setInstruction}")
       case "print -h" => println("This command prints out the current board")
       case "undo -h" => println("This undoes the last move made and saves it to redo later")
       case "redo -h" => println("This redoes the last move that was undone")
@@ -54,7 +54,7 @@ final class TUI(control: Control) extends Reactor {
   }
 
   reactions += {
-    case _: CellSet => println(control.toString)
+    case _: CellSet => println(interpreter.makeColorString)
     case win: Win => handleWin(win)
   }
 

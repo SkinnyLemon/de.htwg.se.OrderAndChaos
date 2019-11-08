@@ -1,13 +1,13 @@
 package de.htwg.se.orderandchaos.control
 
-import de.htwg.se.orderandchaos.model.{Cell, NoMoreMovesException}
+import de.htwg.se.orderandchaos.model.{Cell, NoMoreMovesException, TestGrid}
 import org.junit.runner.RunWith
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class ControlSpec extends WordSpec with Matchers {
-  "A Controller" should {
+  "A Control" should {
     val startController = new TestController
     val winConditionChecker = new TestWinConditionChecker
     "play a red cell" in {

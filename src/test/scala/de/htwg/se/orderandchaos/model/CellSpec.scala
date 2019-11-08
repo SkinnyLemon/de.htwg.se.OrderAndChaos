@@ -20,18 +20,13 @@ class CellSpec extends WordSpec with Matchers {
   "set an empty cell" in {
     Cell.empty.setType(Cell.TYPE_BLUE) should be(new SetCell(Cell.TYPE_BLUE))
   }
-  "have create colored types" in {
-    Cell.blue.coloredType should be(s"$BLUE${Cell.blue.cellType}$RESET")
-    Cell.red.coloredType should be(s"$RED${Cell.red.cellType}$RESET")
-    Cell.empty.coloredType should be(Cell.empty.cellType)
-  }
   "have a nice string representation" in {
-    Cell.blue.toString should be(Cell.blue.coloredType)
-    Cell.red.toString should be(Cell.red.coloredType)
-    Cell.empty.toString should be(Cell.empty.coloredType)
+    Cell.blue.toString should be(Cell.blue.cellType)
+    Cell.red.toString should be(Cell.red.cellType)
+    Cell.empty.toString should be(Cell.empty.cellType)
   }
   "when created not accept wrong types" in {
-    assertThrows[IllegalStateException] {
+    assertThrows[IllegalArgumentException] {
       new SetCell("ABC")
     }
   }

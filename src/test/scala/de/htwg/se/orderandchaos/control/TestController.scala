@@ -14,6 +14,8 @@ case class TestController(override val grid: Grid = new TestGrid, override val t
   }
 
   override def toString: String = TestController.STRING_REPRESENTATION
+
+  override def header: String = ""
 }
 
 object TestController {

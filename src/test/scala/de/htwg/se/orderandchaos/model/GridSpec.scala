@@ -11,12 +11,17 @@ class GridSpec extends WordSpec with Matchers {
     "new" should {
       val grid = Grid.empty
       "be empty" in {
-        grid.forEachField(field => field.cellType should be(Cell.TYPE_EMPTY))
+        grid.forEachCell(field => field.cellType should be(Cell.TYPE_EMPTY))
       }
-      "have a nice String representation" in {
+      "have a nice string representation" in {
         val stringRepresentation = grid.toString
         stringRepresentation should startWith(s"${Cell.TYPE_EMPTY} ")
         stringRepresentation should endWith(s" ${Cell.TYPE_EMPTY}")
+      }
+      "make colored strings" in {
+        grid.makeString(_ => "A") should be(
+          ((("A " * Grid.WIDTH).dropRight(1) + "\n") * Grid.WIDTH).dropRight(1)
+        )
       }
     }
   }
@@ -26,8 +31,8 @@ class GridSpec extends WordSpec with Matchers {
   }
   "maps its cell types" in {
     val newType = "T2"
-    val newGrid = initialGrid.mapEachField(field => field.setType(newType))
-    newGrid.forEachField(field => field.cellType should be(newType))
+    val newGrid = initialGrid.mapEachCell(field => field.setType(newType))
+    newGrid.forEachCell(field => field.cellType should be(newType))
     newGrid(4, 1).cellType should be(newType)
   }
   var buildingGrid: Grid = initialGrid

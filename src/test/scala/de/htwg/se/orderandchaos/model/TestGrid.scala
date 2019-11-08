@@ -1,6 +1,6 @@
 package de.htwg.se.orderandchaos.model
 
-class TestGrid(var field: Cell = Cell.empty, var vector: Vector[Cell] = Vector.empty, vector2: Vector[Vector[Cell]] = Vector.empty) extends Grid {
+class TestGrid(var cell: Cell = Cell.blue, var vector: Vector[Cell] = Vector.empty, vector2: Vector[Vector[Cell]] = Vector.empty) extends Grid {
   var mapCalls = 0
   var forEachCalls = 0
   var existsCalls = 0
@@ -14,26 +14,27 @@ class TestGrid(var field: Cell = Cell.empty, var vector: Vector[Cell] = Vector.e
   var getColumnsCalls = 0
   var getUpDiagonalsCalls = 0
   var getDownDiagonalsCalls = 0
+  var makeStringCalls = 0
 
-  override def mapEachField(f: Cell => Cell): Grid = {
+  override def mapEachCell(f: Cell => Cell): Grid = {
     mapCalls += 1
-    f(field)
+    f(cell)
     this
   }
 
-  override def forEachField(f: Cell => Unit): Unit = {
-    f(field)
+  override def forEachCell(f: Cell => Unit): Unit = {
+    f(cell)
     forEachCalls += 1
   }
 
   override def exists(f: Cell => Boolean): Boolean = {
     existsCalls += 1
-    f(field)
+    f(cell)
   }
 
   override def apply(x: Int, y: Int): Cell = {
     applyCalls += 1
-    field
+    cell
   }
 
   override def set(x: Int, y: Int, fieldType: String): Grid = {
@@ -82,6 +83,11 @@ class TestGrid(var field: Cell = Cell.empty, var vector: Vector[Cell] = Vector.e
   }
 
   override def toString: String = TestGrid.STRING_REPRESENTATION
+
+  override def makeString(cellToString: Cell => String): String = {
+    makeStringCalls += 1
+    cellToString(cell)
+  }
 }
 
 object TestGrid {

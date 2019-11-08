@@ -1,7 +1,6 @@
 package de.htwg.se.orderandchaos.control
 
-import com.google.inject.Inject
-import de.htwg.se.orderandchaos.model.{Cell, Grid, NoMoreMovesException}
+import de.htwg.se.orderandchaos.model.{Cell, Grid, MoveOnDecidedGameException, NoMoreMovesException}
 
 import scala.swing.Publisher
 
@@ -19,6 +18,8 @@ trait Control extends Publisher {
   def reset(): Unit
 
   def controller: Controller
+
+  def makeString(cellToString: Cell => String): String
 }
 
 class ControlImpl(startController: Controller = new StandardController,
@@ -75,10 +76,14 @@ class ControlImpl(startController: Controller = new StandardController,
   }
 
   override def toString: String = currentController.toString
+  override def makeString(cellToString: Cell => String): String = currentController.makeString(cellToString)
 }
 
 abstract class Controller(val grid: Grid, val turn: String) {
   def play(x: Int, y: Int, fieldType: String): Controller
+  override def toString: String = s"$header\n${grid.toString}"
+  def makeString(cellToString: Cell => String): String = s"$header\n${grid.makeString(cellToString)}"
+  def header: String
 }
 
 private class StandardController(grid: Grid = Grid.empty, override val turn: String = "Order") extends Controller(grid, turn) {
@@ -88,11 +93,11 @@ private class StandardController(grid: Grid = Grid.empty, override val turn: Str
     new StandardController(newGrid, nextTurn)
   }
 
-  override def toString: String = s"Turn: $turn\n${grid.toString}"
+  override def header: String = s"Turn: $turn"
 }
 
 private class GameOverController(grid: Grid) extends Controller(grid, "None") {
-  override def play(x: Int, y: Int, fieldType: String): Controller = throw new UnsupportedOperationException("Cannot set fields after the game has ended!")
+  override def play(x: Int, y: Int, fieldType: String): Controller = throw new MoveOnDecidedGameException
 
-  override def toString: String = s"Game over!\n${grid.toString}"
+  override def header: String = s"Game over!"
 }

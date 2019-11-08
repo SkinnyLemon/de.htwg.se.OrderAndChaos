@@ -10,6 +10,8 @@ trait WinConditionChecker {
 }
 
 private class WinConditionCheckerImpl extends WinConditionChecker {
+  private val blueLine = Cell.TYPE_BLUE * WinConditionChecker.WINNINGSTREAK
+  private val redLine = Cell.TYPE_RED * WinConditionChecker.WINNINGSTREAK
 
   def winningLineExists(grid: Grid): Boolean =
     grid.getRows.exists(checkForWinningLine) ||
@@ -37,10 +39,14 @@ private class WinConditionCheckerImpl extends WinConditionChecker {
       }
     }
 
-    checkRest(input, 0, Cell.TYPE_EMPTY)
+    //checkRest(input, 0, Cell.TYPE_EMPTY)
+
+
+    val line = input.mkString("")
+    line.contains(blueLine) || line.contains(redLine)
   }
 
-  def convertEmptyFields(grid: Grid, cell: Cell): Grid = grid.mapEachField {
+  def convertEmptyFields(grid: Grid, cell: Cell): Grid = grid.mapEachCell {
     case Cell(Cell.TYPE_EMPTY) => cell
     case f: Cell => f
   }

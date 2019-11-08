@@ -4,8 +4,6 @@ class TestCell(cellType: String = TestCell.STANDARD_TYPE, set: Boolean = true) e
   override def setType(cellType: String): Cell = new TestCell(cellType)
 
   override def isSet: Boolean = set
-
-  override val coloredType: String = cellType
 }
 
 object TestCell {
