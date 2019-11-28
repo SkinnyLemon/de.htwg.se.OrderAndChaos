@@ -1,4 +1,6 @@
-package de.htwg.se.orderandchaos.model
+package de.htwg.se.orderandchaos.model.grid
+
+import de.htwg.se.orderandchaos.model.cell.Cell
 
 import scala.annotation.tailrec
 
@@ -34,11 +36,11 @@ trait Grid {
 
 private class GridImpl(cells: Vector[Vector[Cell]]) extends Grid {
 
-  override def mapEachCell(f: Cell => Cell): Grid = new GridImpl(cells.map(row => row.map(f)))
+  override def mapEachCell(f: Cell => Cell): Grid = new GridImpl(cells.map(_.map(f)))
 
-  override def forEachCell(f: Cell => Unit): Unit = cells.foreach(row => row.foreach(f))
+  override def forEachCell(f: Cell => Unit): Unit = cells.foreach(_.foreach(f))
 
-  override def exists(f: Cell => Boolean): Boolean = cells.exists(row => row.exists(f))
+  override def exists(f: Cell => Boolean): Boolean = cells.exists(_.exists(f))
 
   override def apply(x: Int, y: Int): Cell = cells(y)(x)
 
@@ -106,4 +108,6 @@ object Grid {
   def empty: Grid = new GridImpl(Vector.fill(WIDTH, WIDTH)(Cell.empty))
 
   def fill(cell: Cell): Grid = new GridImpl(Vector.fill(WIDTH, WIDTH)(cell))
+
+  def fromSeq(cells: Seq[Seq[Cell]]): Grid = new GridImpl(cells.map(_.toVector).toVector)
 }

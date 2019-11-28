@@ -1,6 +1,7 @@
-package de.htwg.se.orderandchaos.control
+package de.htwg.se.orderandchaos.control.winconditionchecker
 
-import de.htwg.se.orderandchaos.model.{Cell, Grid, TestGrid}
+import de.htwg.se.orderandchaos.model.cell.Cell
+import de.htwg.se.orderandchaos.model.grid.{Grid, TestGrid}
 import org.junit.runner.RunWith
 import org.scalatest._
 import org.scalatest.junit.JUnitRunner

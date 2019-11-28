@@ -1,6 +1,7 @@
 package de.htwg.se.orderandchaos.control
 
-import de.htwg.se.orderandchaos.model.Cell
+import de.htwg.se.orderandchaos.control.controller.{Controller, TestController}
+import de.htwg.se.orderandchaos.model.cell.Cell
 
 class TestControl(controllerToUse: Controller = new TestController, cell: Cell = Cell.red) extends Control {
   var redCalls = 0

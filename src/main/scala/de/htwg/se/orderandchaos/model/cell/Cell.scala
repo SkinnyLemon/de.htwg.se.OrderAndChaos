@@ -1,4 +1,6 @@
-package de.htwg.se.orderandchaos.model
+package de.htwg.se.orderandchaos.model.cell
+
+import de.htwg.se.orderandchaos.model.{IllegalOverrideException, InvalidCellTypeException}
 
 abstract case class Cell(cellType: String) {
   def setType(fieldType: String): Cell
@@ -41,4 +43,8 @@ object Cell {
   val red: Cell = new SetCell(TYPE_RED)
   val validSetTypes: Array[String] = Array(TYPE_BLUE, TYPE_RED)
   val validTypes: Array[String] = Array(TYPE_BLUE, TYPE_RED, TYPE_EMPTY)
+
+  def ofType(cellType: String): Cell =
+    if (cellType equals TYPE_EMPTY) new EmptyCell
+    else new SetCell(cellType)
 }

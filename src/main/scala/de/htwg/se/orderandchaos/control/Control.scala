@@ -1,6 +1,9 @@
 package de.htwg.se.orderandchaos.control
 
-import de.htwg.se.orderandchaos.model.{Cell, Grid, MoveOnDecidedGameException, NoMoreMovesException}
+import de.htwg.se.orderandchaos.control.controller.Controller
+import de.htwg.se.orderandchaos.control.winconditionchecker.WinConditionChecker
+import de.htwg.se.orderandchaos.model.NoMoreMovesException
+import de.htwg.se.orderandchaos.model.cell.Cell
 
 import scala.swing.Publisher
 
@@ -22,7 +25,7 @@ trait Control extends Publisher {
   def makeString(cellToString: Cell => String): String
 }
 
-class ControlImpl(startController: Controller = new StandardController,
+class ControlImpl(startController: Controller = Controller.getNew,
                   winConditionChecker: WinConditionChecker = WinConditionChecker.get) extends Control {
   private var currentController: Controller = startController
   private var pastMoves: Vector[Controller] = Vector.empty
@@ -40,10 +43,10 @@ class ControlImpl(startController: Controller = new StandardController,
     val newController = currentController.play(x, y, fieldType)
     val grid = newController.grid
     if (winConditionChecker.winningLineExists(grid)) {
-      currentController = new GameOverController(grid)
+      currentController = Controller.getFinished(grid, "Order")
       publish(new Win("Order"))
     } else if (winConditionChecker.noWinningLinePossible(grid)) {
-      currentController = new GameOverController(grid)
+      currentController = Controller.getFinished(grid, "Chaos")
       publish(new Win("Chaos"))
     } else {
       currentController = newController
@@ -77,27 +80,4 @@ class ControlImpl(startController: Controller = new StandardController,
 
   override def toString: String = currentController.toString
   override def makeString(cellToString: Cell => String): String = currentController.makeString(cellToString)
-}
-
-abstract class Controller(val grid: Grid, val turn: String) {
-  def play(x: Int, y: Int, fieldType: String): Controller
-  override def toString: String = s"$header\n${grid.toString}"
-  def makeString(cellToString: Cell => String): String = s"$header\n${grid.makeString(cellToString)}"
-  def header: String
-}
-
-private class StandardController(grid: Grid = Grid.empty, override val turn: String = "Order") extends Controller(grid, turn) {
-  override def play(x: Int, y: Int, fieldType: String): Controller = {
-    val newGrid = grid.set(x - 1, y - 1, fieldType)
-    val nextTurn = if (turn == "Order") "Chaos" else "Order"
-    new StandardController(newGrid, nextTurn)
-  }
-
-  override def header: String = s"Turn: $turn"
-}
-
-private class GameOverController(grid: Grid) extends Controller(grid, "None") {
-  override def play(x: Int, y: Int, fieldType: String): Controller = throw new MoveOnDecidedGameException
-
-  override def header: String = s"Game over!"
 }

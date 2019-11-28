@@ -1,21 +1,23 @@
-package de.htwg.se.orderandchaos.model
+package de.htwg.se.orderandchaos.model.cell
 
-import org.scalatest._
+import de.htwg.se.orderandchaos.model.IllegalOverrideException
 import org.junit.runner.RunWith
+import org.scalatest._
 import org.scalatest.junit.JUnitRunner
-
-import io.AnsiColor.{BLUE, RED, RESET}
 
 @RunWith(classOf[JUnitRunner])
 class CellSpec extends WordSpec with Matchers {
   "be able to be blue" in {
     Cell.blue should be(new SetCell(Cell.TYPE_BLUE))
+    Cell.ofType(Cell.TYPE_BLUE) should be(new SetCell(Cell.TYPE_BLUE))
   }
   "be able to be red" in {
     Cell.red should be(new SetCell(Cell.TYPE_RED))
+    Cell.ofType(Cell.TYPE_RED) should be(new SetCell(Cell.TYPE_RED))
   }
   "be able to be empty" in {
     Cell.empty should be(new SetCell(Cell.TYPE_EMPTY))
+    Cell.ofType(Cell.TYPE_EMPTY) should be(new SetCell(Cell.TYPE_EMPTY))
   }
   "set an empty cell" in {
     Cell.empty.setType(Cell.TYPE_BLUE) should be(new SetCell(Cell.TYPE_BLUE))

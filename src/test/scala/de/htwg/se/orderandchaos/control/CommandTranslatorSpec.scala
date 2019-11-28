@@ -1,6 +1,7 @@
 package de.htwg.se.orderandchaos.control
 
-import de.htwg.se.orderandchaos.model.{Cell, CommandParsingException, InvalidCellTypeException}
+import de.htwg.se.orderandchaos.model.cell.{Cell, TestCell}
+import de.htwg.se.orderandchaos.model.{CommandParsingException, InvalidCellTypeException}
 import org.junit.runner.RunWith
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
@@ -54,6 +55,13 @@ class CommandTranslatorSpec extends WordSpec with Matchers {
       interpreter.colorCell(Cell.blue) should be(s"$BLUE${Cell.blue}$RESET")
       interpreter.colorCell(Cell.red) should be(s"$RED${Cell.red}$RESET")
       interpreter.colorCell(Cell.empty) should be(Cell.empty.toString)
+    }
+    "refuse to color broken cells" in {
+      val control = new TestControl
+      val interpreter = new CommandTranslator(control)
+      assertThrows[IllegalArgumentException] {
+        interpreter.colorCell(new TestCell)
+      }
     }
     "passes on errors" in {
       val control = new ErrorControl(new UnsupportedOperationException)

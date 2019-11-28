@@ -1,9 +1,12 @@
 package de.htwg.se.orderandchaos.control
 
-import de.htwg.se.orderandchaos.model.{Cell, NoMoreMovesException, TestGrid}
+import de.htwg.se.orderandchaos.control.controller.TestController
+import de.htwg.se.orderandchaos.control.winconditionchecker.TestWinConditionChecker
+import de.htwg.se.orderandchaos.model.NoMoreMovesException
+import de.htwg.se.orderandchaos.model.cell.Cell
 import org.junit.runner.RunWith
-import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.{Matchers, WordSpec}
 
 @RunWith(classOf[JUnitRunner])
 class ControlSpec extends WordSpec with Matchers {
@@ -96,16 +99,21 @@ class ControlSpec extends WordSpec with Matchers {
     "recognizes an order win" in {
       val control: Control = new ControlImpl(startController, new TestWinConditionChecker(1))
       control.play(2, 3, Cell.TYPE_EMPTY)
-      control.controller.isInstanceOf[GameOverController] should be(true)
+      control.controller.isOngoing should be(false)
     }
     "recognizes a chaos win" in {
       val control: Control = new ControlImpl(startController, new TestWinConditionChecker(2))
       control.play(2, 3, Cell.TYPE_EMPTY)
-      control.controller.isInstanceOf[GameOverController] should be(true)
+      control.controller.isOngoing should be(false)
     }
     "have a nice string representation" in {
       val control: Control = new ControlImpl(startController, new TestWinConditionChecker(2))
       control.toString should be(TestController.STRING_REPRESENTATION)
+    }
+    "make a custom string representation" in {
+      val control: Control = new ControlImpl(startController, new TestWinConditionChecker(2))
+      control.makeString(_ => "") should be("\n")
+      control.controller.asInstanceOf[TestController].headerCalls should be(1)
     }
   }
 }

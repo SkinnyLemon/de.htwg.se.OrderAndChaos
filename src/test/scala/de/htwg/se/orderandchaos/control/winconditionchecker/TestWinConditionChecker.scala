@@ -1,5 +1,6 @@
-package de.htwg.se.orderandchaos.control
-import de.htwg.se.orderandchaos.model.Grid
+package de.htwg.se.orderandchaos.control.winconditionchecker
+
+import de.htwg.se.orderandchaos.model.grid.Grid
 
 class TestWinConditionChecker(returnValue: Int = 0) extends WinConditionChecker {
   override def winningLineExists(grid: Grid): Boolean = returnValue == 1

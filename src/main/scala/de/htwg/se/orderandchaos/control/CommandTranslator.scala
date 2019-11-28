@@ -1,6 +1,8 @@
 package de.htwg.se.orderandchaos.control
 
-import de.htwg.se.orderandchaos.model.{Cell, CommandParsingException, InvalidCellTypeException}
+import de.htwg.se.orderandchaos.control.winconditionchecker.WinConditionChecker
+import de.htwg.se.orderandchaos.model.cell.Cell
+import de.htwg.se.orderandchaos.model.{CommandParsingException, InvalidCellTypeException}
 
 import scala.io.AnsiColor.{BLUE, RED, RESET}
 import scala.util.{Failure, Success, Try}
@@ -14,6 +16,7 @@ class CommandTranslator(control: Control) {
     case Cell.blue => s"$BLUE${Cell.blue}$RESET"
     case Cell.red => s"$RED${Cell.red}$RESET"
     case Cell.empty => Cell.empty.toString
+    case Cell(_) => throw new IllegalArgumentException("Cell did not match known types")
   }
 
   def interpretSet(input: String): Unit = {

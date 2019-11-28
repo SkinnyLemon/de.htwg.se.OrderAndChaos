@@ -1,7 +1,8 @@
-package de.htwg.se.orderandchaos.model
+package de.htwg.se.orderandchaos.model.grid
 
-import org.scalatest._
+import de.htwg.se.orderandchaos.model.cell.{Cell, TestCell}
 import org.junit.runner.RunWith
+import org.scalatest._
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
@@ -146,5 +147,9 @@ class GridSpec extends WordSpec with Matchers {
         downDiagonals(diagonal)(index).cellType should be(s"${x + index}${y - index}")
       }
     }
+  }
+  "Builds from a Sequence" in {
+    val customGrid = Grid.fromSeq(Seq.fill(6)(Seq.fill(6)(new TestCell)))
+    customGrid.forEachCell(_.cellType should be(TestCell.STANDARD_TYPE))
   }
 }

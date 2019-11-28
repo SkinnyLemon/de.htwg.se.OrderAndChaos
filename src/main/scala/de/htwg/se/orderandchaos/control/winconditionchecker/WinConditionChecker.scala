@@ -1,6 +1,7 @@
-package de.htwg.se.orderandchaos.control
+package de.htwg.se.orderandchaos.control.winconditionchecker
 
-import de.htwg.se.orderandchaos.model.{Cell, Grid}
+import de.htwg.se.orderandchaos.model.cell.Cell
+import de.htwg.se.orderandchaos.model.grid.Grid
 
 trait WinConditionChecker {
   def winningLineExists(grid: Grid): Boolean

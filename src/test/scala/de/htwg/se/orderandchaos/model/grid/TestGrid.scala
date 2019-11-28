@@ -1,4 +1,6 @@
-package de.htwg.se.orderandchaos.model
+package de.htwg.se.orderandchaos.model.grid
+
+import de.htwg.se.orderandchaos.model.cell.Cell
 
 class TestGrid(var cell: Cell = Cell.blue, var vector: Vector[Cell] = Vector.empty, vector2: Vector[Vector[Cell]] = Vector.empty) extends Grid {
   var mapCalls = 0
