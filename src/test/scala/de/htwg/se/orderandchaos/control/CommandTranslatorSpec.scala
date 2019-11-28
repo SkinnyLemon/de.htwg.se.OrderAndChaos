@@ -39,6 +39,9 @@ class CommandTranslatorSpec extends WordSpec with Matchers {
         interpreter.interpretSet("1,2")
       }
       assertThrows[CommandParsingException] {
+        interpreter.interpretSet("1 A")
+      }
+      assertThrows[CommandParsingException] {
         interpreter.interpretSet(Cell.TYPE_RED)
       }
     }
