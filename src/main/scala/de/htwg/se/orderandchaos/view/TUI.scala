@@ -1,5 +1,6 @@
 package de.htwg.se.orderandchaos.view
 
+import com.google.inject.Inject
 import de.htwg.se.orderandchaos.control.{CellSet, CommandTranslator, Control, Win}
 import de.htwg.se.orderandchaos.model.{CommandParsingException, OacException}
 
@@ -9,7 +10,7 @@ import scala.swing.Reactor
 import scala.util.{Failure, Success, Try}
 
 //noinspection ScalaStyle
-final class TUI(control: Control) extends Reactor {
+final class TUI(@Inject control: Control) extends Reactor {
   listenTo(control)
   val interpreter = new CommandTranslator(control)
   var stop = false
@@ -37,7 +38,9 @@ final class TUI(control: Control) extends Reactor {
           case set if set startsWith "set " => interpreter.interpretSet(set.substring(4))
           case "undo" => control.undo()
           case "redo" => control.redo()
-          case "print" => println(control.toString)
+          case "save" => control.save()
+          case "load" => control.load()
+          case "print" => println(interpreter.makeColorString)
           case _ => throw new CommandParsingException("Unrecognized command!")
         }) match {
           case Failure(e: CommandParsingException) => println(s"Error parsing command: ${e.getMessage}")

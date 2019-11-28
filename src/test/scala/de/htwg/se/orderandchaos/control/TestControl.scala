@@ -12,6 +12,8 @@ class TestControl(controllerToUse: Controller = new TestController, cell: Cell =
   var undoCalls = 0
   var redoCalls = 0
   var resetCalls = 0
+  var saveCalls = 0
+  var loadCalls = 0
   var controllerCalls = 0
   var makeStringCalls = 0
   var lastX: Int = _
@@ -58,6 +60,10 @@ class TestControl(controllerToUse: Controller = new TestController, cell: Cell =
     returnValue
   }
 
+  override def save(): Unit = saveCalls += 1
+
+  override def load(): Unit = loadCalls += 1
+
   override def controller: Controller = {
     controllerCalls += 1
     controllerToUse
@@ -82,6 +88,10 @@ class ErrorControl(exception: Exception) extends Control {
   override def redo(): Try[Unit] = Failure(exception)
 
   override def reset(): Try[Unit] = Failure(exception)
+
+  override def save(): Unit = throw exception
+
+  override def load(): Unit = throw exception
 
   override def controller: Controller = throw exception
 

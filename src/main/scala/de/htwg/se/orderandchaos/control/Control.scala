@@ -1,6 +1,8 @@
 package de.htwg.se.orderandchaos.control
 
+import com.google.inject.Inject
 import de.htwg.se.orderandchaos.control.controller.Controller
+import de.htwg.se.orderandchaos.control.json.JsonFileManager
 import de.htwg.se.orderandchaos.control.winconditionchecker.WinConditionChecker
 import de.htwg.se.orderandchaos.model.NoMoreMovesException
 import de.htwg.se.orderandchaos.model.cell.Cell
@@ -21,13 +23,18 @@ trait Control extends Publisher {
 
   def reset(): Try[Unit]
 
+  def save(): Unit
+
+  def load(): Unit
+
   def controller: Controller
 
   def makeString(cellToString: Cell => String): String
 }
 
 class ControlImpl(startController: Controller = Controller.getNew,
-                  winConditionChecker: WinConditionChecker = WinConditionChecker.get) extends Control {
+                  winConditionChecker: WinConditionChecker = WinConditionChecker.get,
+                  @Inject fileManager: FileManager = new JsonFileManager) extends Control {
   private var currentController: Controller = startController
   private var pastMoves: Vector[Controller] = Vector.empty
   private var futureMoves: Vector[Controller] = Vector.empty
@@ -81,6 +88,16 @@ class ControlImpl(startController: Controller = Controller.getNew,
     currentController = startController
     publish(new CellSet)
     Success()
+  }
+
+  override def save(): Unit = fileManager.saveToFile(currentController)
+
+  override def load(): Unit = {
+    val controller = fileManager.loadFromFile
+    pastMoves = currentController +: pastMoves
+    currentController = controller
+    if (controller.isOngoing) publish(new CellSet)
+    else publish(new Win(controller.turn))
   }
 
   override def toString: String = currentController.toString

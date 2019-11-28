@@ -48,3 +48,4 @@ yourgame.log
 # Artifact
 out/
 **/META-INF/
+/save.*
