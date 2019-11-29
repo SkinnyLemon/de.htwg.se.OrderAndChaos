@@ -2,6 +2,8 @@ package de.htwg.se.orderandchaos.model.grid
 
 import de.htwg.se.orderandchaos.model.cell.Cell
 
+import scala.util.{Success, Try}
+
 class TestGrid(var cell: Cell = Cell.blue, var vector: Vector[Cell] = Vector.empty, vector2: Vector[Vector[Cell]] = Vector.empty) extends Grid {
   var mapCalls = 0
   var forEachCalls = 0
@@ -39,49 +41,49 @@ class TestGrid(var cell: Cell = Cell.blue, var vector: Vector[Cell] = Vector.emp
     cell
   }
 
-  override def set(x: Int, y: Int, fieldType: String): Grid = {
+  override def set(x: Int, y: Int, fieldType: String): Try[Grid] = {
     setCalls += 1
-    this
+    Success(this)
   }
 
-  override def getRow(y: Int): Vector[Cell] = {
+  override def getRow(y: Int): Try[Vector[Cell]] = {
     getRowCalls += 1
-    vector
+    Success(vector)
   }
 
-  override def getColumn(x: Int): Vector[Cell] = {
+  override def getColumn(x: Int): Try[Vector[Cell]] = {
     getColumnCalls += 1
-    vector
+    Success(vector)
   }
 
-  override def getUpDiagonal(xStart: Int, yStart: Int): Vector[Cell] = {
+  override def getUpDiagonal(xStart: Int, yStart: Int): Try[Vector[Cell]] = {
     getUpDiagonalCalls += 1
-    vector
+    Success(vector)
   }
 
-  override def getDownDiagonal(xStart: Int, yStart: Int): Vector[Cell] = {
+  override def getDownDiagonal(xStart: Int, yStart: Int): Try[Vector[Cell]] = {
     getDownDiagonalCalls += 1
-    vector
+    Success(vector)
   }
 
-  override def getRows: Vector[Vector[Cell]] = {
+  override def getRows: Try[Vector[Vector[Cell]]] = {
     getRowsCalls += 1
-    vector2
+    Success(vector2)
   }
 
-  override def getColumns: Vector[Vector[Cell]] = {
+  override def getColumns: Try[Vector[Vector[Cell]]] = {
     getColumnsCalls += 1
-    vector2
+    Success(vector2)
   }
 
-  override def getUpDiagonals: Vector[Vector[Cell]] = {
+  override def getUpDiagonals: Try[Vector[Vector[Cell]]] = {
     getUpDiagonalsCalls += 1
-    vector2
+    Success(vector2)
   }
 
-  override def getDownDiagonals: Vector[Vector[Cell]] = {
+  override def getDownDiagonals: Try[Vector[Vector[Cell]]] = {
     getDownDiagonalsCalls += 1
-    vector2
+    Success(vector2)
   }
 
   override def toString: String = TestGrid.STRING_REPRESENTATION

@@ -1,26 +1,29 @@
 package de.htwg.se.orderandchaos.model.cell
 
 import de.htwg.se.orderandchaos.model.IllegalOverrideException
+import de.htwg.se.orderandchaos.util.ExceptionChecker
 import org.junit.runner.RunWith
 import org.scalatest._
 import org.scalatest.junit.JUnitRunner
+
+import scala.util.Success
 
 @RunWith(classOf[JUnitRunner])
 class CellSpec extends WordSpec with Matchers {
   "be able to be blue" in {
     Cell.blue should be(new SetCell(Cell.TYPE_BLUE))
-    Cell.ofType(Cell.TYPE_BLUE) should be(new SetCell(Cell.TYPE_BLUE))
+    Cell.ofType(Cell.TYPE_BLUE) should be(Success(new SetCell(Cell.TYPE_BLUE)))
   }
   "be able to be red" in {
     Cell.red should be(new SetCell(Cell.TYPE_RED))
-    Cell.ofType(Cell.TYPE_RED) should be(new SetCell(Cell.TYPE_RED))
+    Cell.ofType(Cell.TYPE_RED) should be(Success(new SetCell(Cell.TYPE_RED)))
   }
   "be able to be empty" in {
     Cell.empty should be(new SetCell(Cell.TYPE_EMPTY))
-    Cell.ofType(Cell.TYPE_EMPTY) should be(new SetCell(Cell.TYPE_EMPTY))
+    Cell.ofType(Cell.TYPE_EMPTY) should be(Success(new SetCell(Cell.TYPE_EMPTY)))
   }
   "set an empty cell" in {
-    Cell.empty.setType(Cell.TYPE_BLUE) should be(new SetCell(Cell.TYPE_BLUE))
+    Cell.empty.setType(Cell.TYPE_BLUE) should be(Success(new SetCell(Cell.TYPE_BLUE)))
   }
   "have a nice string representation" in {
     Cell.blue.toString should be(Cell.blue.cellType)
@@ -28,14 +31,12 @@ class CellSpec extends WordSpec with Matchers {
     Cell.empty.toString should be(Cell.empty.cellType)
   }
   "when created not accept wrong types" in {
-    assertThrows[IllegalArgumentException] {
+    assertThrows[IllegalStateException] {
       new SetCell("ABC")
     }
   }
-  "when set not accept wrong types" in {
-    assertThrows[IllegalArgumentException] {
-      Cell.empty.setType(Cell.TYPE_EMPTY)
-    }
+  "when empty not accept wrong types" in {
+    ExceptionChecker.checkTry[IllegalArgumentException](Cell.empty.setType(Cell.TYPE_EMPTY), "accepted wrong type")
   }
   "recognize blue cells as such" in {
     val blueCell = new SetCell(Cell.TYPE_BLUE)
@@ -59,11 +60,7 @@ class CellSpec extends WordSpec with Matchers {
     emptyCell.isSet should be(false)
   }
   "not accept being set when already set" in {
-    assertThrows[IllegalOverrideException] {
-      Cell.blue.setType(Cell.TYPE_RED)
-    }
-    assertThrows[IllegalOverrideException] {
-      Cell.red.setType(Cell.TYPE_BLUE)
-    }
+    ExceptionChecker.checkTry[IllegalOverrideException](Cell.blue.setType(Cell.TYPE_RED), "accepted override")
+    ExceptionChecker.checkTry[IllegalOverrideException](Cell.red.setType(Cell.TYPE_BLUE), "accepted override")
   }
 }

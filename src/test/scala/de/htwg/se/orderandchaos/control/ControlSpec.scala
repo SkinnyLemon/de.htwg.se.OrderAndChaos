@@ -4,6 +4,7 @@ import de.htwg.se.orderandchaos.control.controller.TestController
 import de.htwg.se.orderandchaos.control.winconditionchecker.TestWinConditionChecker
 import de.htwg.se.orderandchaos.model.NoMoreMovesException
 import de.htwg.se.orderandchaos.model.cell.Cell
+import de.htwg.se.orderandchaos.util.ExceptionChecker
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{Matchers, WordSpec}
@@ -68,26 +69,18 @@ class ControlSpec extends WordSpec with Matchers {
     }
     "limit undos" in {
       val control: Control = new ControlImpl(startController, winConditionChecker)
-      assertThrows[NoMoreMovesException] {
-        control.undo()
-      }
+      ExceptionChecker.checkTry(control.undo(), "Did too many undos")
       control.play(4, 5, Cell.TYPE_BLUE)
       control.undo()
-      assertThrows[NoMoreMovesException] {
-        control.undo()
-      }
+      ExceptionChecker.checkTry(control.undo(), "Did too many undos")
     }
     "limit redos" in {
       val control: Control = new ControlImpl(startController, winConditionChecker)
-      assertThrows[NoMoreMovesException] {
-        control.redo()
-      }
+      ExceptionChecker.checkTry(control.redo(), "Did too many redos")
       control.play(4, 5, Cell.TYPE_BLUE)
       control.undo()
       control.redo()
-      assertThrows[NoMoreMovesException] {
-        control.redo()
-      }
+      ExceptionChecker.checkTry(control.redo(), "Did too many redos")
     }
     "reset" in {
       val control: Control = new ControlImpl(startController, winConditionChecker)

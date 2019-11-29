@@ -3,7 +3,9 @@ package de.htwg.se.orderandchaos.control
 import de.htwg.se.orderandchaos.control.controller.{Controller, TestController}
 import de.htwg.se.orderandchaos.model.cell.Cell
 
-class TestControl(controllerToUse: Controller = new TestController, cell: Cell = Cell.red) extends Control {
+import scala.util.{Failure, Success, Try}
+
+class TestControl(controllerToUse: Controller = new TestController, cell: Cell = Cell.red, returnValue: Try[Unit] = Success()) extends Control {
   var redCalls = 0
   var blueCalls = 0
   var playCalls = 0
@@ -17,32 +19,44 @@ class TestControl(controllerToUse: Controller = new TestController, cell: Cell =
   var lastType: String = _
   var lastCellMethod: Cell => String = _
 
-  override def playRed(x: Int, y: Int): Unit = {
+  override def playRed(x: Int, y: Int): Try[Unit] = {
     redCalls += 1
     lastX = x
     lastY = y
     lastType = Cell.TYPE_RED
+    returnValue
   }
 
-  override def playBlue(x: Int, y: Int): Unit = {
+  override def playBlue(x: Int, y: Int): Try[Unit] = {
     blueCalls += 1
     lastX = x
     lastY = y
     lastType = Cell.TYPE_BLUE
+    returnValue
   }
 
-  override def play(x: Int, y: Int, cellType: String): Unit = {
+  override def play(x: Int, y: Int, cellType: String): Try[Unit] = {
     playCalls += 1
     lastX = x
     lastY = y
     lastType = cellType
+    returnValue
   }
 
-  override def undo(): Unit = undoCalls += 1
+  override def undo(): Try[Unit] = {
+    undoCalls += 1
+    returnValue
+  }
 
-  override def redo(): Unit = redoCalls += 1
+  override def redo(): Try[Unit] = {
+    redoCalls += 1
+    returnValue
+  }
 
-  override def reset(): Unit = resetCalls += 1
+  override def reset(): Try[Unit] = {
+    resetCalls += 1
+    returnValue
+  }
 
   override def controller: Controller = {
     controllerCalls += 1
@@ -57,17 +71,17 @@ class TestControl(controllerToUse: Controller = new TestController, cell: Cell =
 }
 
 class ErrorControl(exception: Exception) extends Control {
-  override def playRed(x: Int, y: Int): Unit = throw exception
+  override def playRed(x: Int, y: Int): Try[Unit] = Failure(exception)
 
-  override def playBlue(x: Int, y: Int): Unit = throw exception
+  override def playBlue(x: Int, y: Int): Try[Unit] = Failure(exception)
 
-  override def play(x: Int, y: Int, fieldType: String): Unit = throw exception
+  override def play(x: Int, y: Int, fieldType: String): Try[Unit] = Failure(exception)
 
-  override def undo(): Unit = throw exception
+  override def undo(): Try[Unit] = Failure(exception)
 
-  override def redo(): Unit = throw exception
+  override def redo(): Try[Unit] = Failure(exception)
 
-  override def reset(): Unit = throw exception
+  override def reset(): Try[Unit] = Failure(exception)
 
   override def controller: Controller = throw exception
 
