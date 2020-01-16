@@ -53,14 +53,14 @@ class CommandTranslatorSpec extends WordSpec with Matchers {
       val interpreter = new CommandTranslator(control)
       ExceptionChecker.checkTry[IllegalArgumentException](interpreter.colorCell(new TestCell), "accepted broken cell")
     }
-    "passes on errors" in {
+    "pass on errors" in {
       val control = new ErrorControl(new UnsupportedOperationException)
       val interpreter = new CommandTranslator(control)
-      ExceptionChecker.checkTry[IllegalArgumentException](interpreter.interpretSet(s"3,2 ${Cell.TYPE_BLUE}"),
+      ExceptionChecker.checkTry[UnsupportedOperationException](interpreter.interpretSet(s"3,2 ${Cell.TYPE_BLUE}"),
         "did not pass on error",
         "passed on wrong error")
     }
-    "translates invalid cell types to parsing exceptions" in {
+    "translate invalid cell types to parsing exceptions" in {
       val control = new ErrorControl(new InvalidCellTypeException)
       val interpreter = new CommandTranslator(control)
       ExceptionChecker.checkTry[CommandParsingException](interpreter.interpretSet(s"3,2 GG"),

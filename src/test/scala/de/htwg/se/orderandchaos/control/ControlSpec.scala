@@ -69,18 +69,18 @@ class ControlSpec extends WordSpec with Matchers {
     }
     "limit undos" in {
       val control: Control = new ControlImpl(startController, winConditionChecker)
-      ExceptionChecker.checkTry(control.undo(), "Did too many undos")
+      ExceptionChecker.checkTry[NoMoreMovesException](control.undo(), "Did too many undos")
       control.play(4, 5, Cell.TYPE_BLUE)
       control.undo()
-      ExceptionChecker.checkTry(control.undo(), "Did too many undos")
+      ExceptionChecker.checkTry[NoMoreMovesException](control.undo(), "Did too many undos")
     }
     "limit redos" in {
       val control: Control = new ControlImpl(startController, winConditionChecker)
-      ExceptionChecker.checkTry(control.redo(), "Did too many redos")
+      ExceptionChecker.checkTry[NoMoreMovesException](control.redo(), "Did too many redos")
       control.play(4, 5, Cell.TYPE_BLUE)
       control.undo()
       control.redo()
-      ExceptionChecker.checkTry(control.redo(), "Did too many redos")
+      ExceptionChecker.checkTry[NoMoreMovesException](control.redo(), "Did too many redos")
     }
     "reset" in {
       val control: Control = new ControlImpl(startController, winConditionChecker)

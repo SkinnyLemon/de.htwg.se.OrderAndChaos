@@ -29,7 +29,7 @@ class CommandTranslator(control: Control) {
     } else {
       val cellType = values(1)
       buildCoordinates(values(0)) match {
-        case Success(coordinates) => Success(control.play(coordinates(0), coordinates(1), cellType))
+        case Success(coordinates) => control.play(coordinates(0), coordinates(1), cellType)
         case Failure(e) => Failure(e)
       }
     } match {
