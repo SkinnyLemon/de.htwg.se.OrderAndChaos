@@ -61,6 +61,5 @@ final class TUI(control: Control) extends Reactor {
   def handleWin(win: Win): Unit = {
     println(s"Player ${win.player} won the game!")
     println(interpreter.makeColorString)
-    stop = true
   }
 }
