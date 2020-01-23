@@ -1,4 +1,4 @@
-package de.htwg.se.orderandchaos.control
+package de.htwg.se.orderandchaos.control.file
 
 import de.htwg.se.orderandchaos.control.controller.Controller
 

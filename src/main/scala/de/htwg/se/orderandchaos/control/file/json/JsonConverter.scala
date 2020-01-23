@@ -1,15 +1,20 @@
-package de.htwg.se.orderandchaos.control.json
+package de.htwg.se.orderandchaos.control.file.json
 
-import de.htwg.se.orderandchaos.control.FileManager
 import de.htwg.se.orderandchaos.control.controller.Controller
+import de.htwg.se.orderandchaos.control.file.FileManager
 import de.htwg.se.orderandchaos.model.JsonParsingException
 import de.htwg.se.orderandchaos.model.cell.Cell
 import de.htwg.se.orderandchaos.model.grid.Grid
 import play.api.libs.json._
 
+import scala.util.{Failure, Success}
+
 object JsonConverter {
   implicit val cellWrites: Writes[Cell] = (cell: Cell) => Json.obj("type" -> cell.cellType)
-  implicit val gridWrites: Writes[Grid] = (grid: Grid) => Json.obj("fields" -> grid.getRows.map(_.map(Json.toJson(_))))
+  implicit val gridWrites: Writes[Grid] = (grid: Grid) => Json.obj("fields" -> (grid.getRows match {
+    case Success(rows) => rows.map(_.map(Json.toJson(_)))
+    case Failure(exception) => throw exception
+  }))
   implicit val controllerWrites: Writes[Controller] = (controller: Controller) => Json.obj(
     "type" -> Json.toJson(
       if (controller.isOngoing) FileManager.CONTROLLER_STANDARD_TYPE
@@ -17,7 +22,10 @@ object JsonConverter {
     "turn" -> Json.toJson(controller.turn),
     "grid" -> Json.toJson(controller.grid))
 
-  implicit val cellReads: Reads[Cell] = (json: JsValue) => JsSuccess(Cell.ofType(validateString(json \ "type")))
+  implicit val cellReads: Reads[Cell] = (json: JsValue) => JsSuccess(Cell.ofType(validateString(json \ "type")) match {
+    case Success(cell) => cell
+    case Failure(exception) => throw exception
+  })
   implicit val gridReads: Reads[Grid] = (json: JsValue) => (json \ "fields").get.validate[Seq[Seq[Cell]]] match {
     case JsSuccess(cells, _) => JsSuccess(Grid.fromSeq(cells))
     case e: JsError => throw new JsonParsingException("Grid", convertError(e))

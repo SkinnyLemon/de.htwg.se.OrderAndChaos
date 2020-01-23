@@ -2,7 +2,8 @@ package de.htwg.se.orderandchaos.control
 
 import com.google.inject.Inject
 import de.htwg.se.orderandchaos.control.controller.Controller
-import de.htwg.se.orderandchaos.control.json.JsonFileManager
+import de.htwg.se.orderandchaos.control.file.FileManager
+import de.htwg.se.orderandchaos.control.file.json.JsonFileManager
 import de.htwg.se.orderandchaos.control.winconditionchecker.WinConditionChecker
 import de.htwg.se.orderandchaos.model.NoMoreMovesException
 import de.htwg.se.orderandchaos.model.cell.Cell

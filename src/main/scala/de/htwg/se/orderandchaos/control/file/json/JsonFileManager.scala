@@ -1,9 +1,9 @@
-package de.htwg.se.orderandchaos.control.json
+package de.htwg.se.orderandchaos.control.file.json
 
 import java.io.{File, PrintWriter}
 
-import de.htwg.se.orderandchaos.control.FileManager
 import de.htwg.se.orderandchaos.control.controller.Controller
+import de.htwg.se.orderandchaos.control.file.FileManager
 import play.api.libs.json.{JsValue, Json}
 
 import scala.io.Source
