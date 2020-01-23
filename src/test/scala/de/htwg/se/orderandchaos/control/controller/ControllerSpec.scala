@@ -34,7 +34,6 @@ class ControllerSpec extends WordSpec with Matchers {
           newController.turn should be("Chaos")
         case Failure(e) => fail(e)
       }
-
     }
     "not play turns when the game is over" in {
       val controller: Controller = Controller.getFinished(new TestGrid, "Order")

@@ -9,7 +9,6 @@ object OrderAndChaos {
   val injector: Injector = Guice.createInjector(new OacModule)
   val control: Control = injector.getInstance(classOf[Control])
   val tui: TUI = new TUI(control)
-  val gui: SwingGui = new SwingGui(control)
 
   def main(args: Array[String]): Unit = {
     tui.interpretLines()
