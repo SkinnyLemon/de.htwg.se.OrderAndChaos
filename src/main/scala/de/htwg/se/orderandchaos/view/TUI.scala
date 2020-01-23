@@ -38,6 +38,7 @@ final class TUI(@Inject control: Control) extends Reactor {
           case set if set startsWith "set " => interpreter.interpretSet(set.substring(4))
           case "undo" => control.undo()
           case "redo" => control.redo()
+          case "reset" => control.reset()
           case "save" => control.save()
           case "load" => control.load()
           case "print" => println(interpreter.makeColorString)

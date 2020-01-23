@@ -17,6 +17,17 @@ class SwingGui(control: Control) extends Frame {
       contents += new MenuItem(Action("Redo") {
         control.redo()
       })
+      contents += new MenuItem(Action("Reset") {
+        control.reset()
+      })
+    }
+    contents += new Menu("File") {
+      contents += new MenuItem(Action("Save") {
+        control.save()
+      })
+      contents += new MenuItem(Action("Load") {
+        control.load()
+      })
     }
   }
   contents = update()
